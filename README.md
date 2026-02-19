@@ -4,10 +4,9 @@
 ```mermaid
 erDiagram
     KATEGORI ||--o{ BUKU : "memiliki"
-    RAK_BUKU ||--o{ BUKU : "menyimpan"
-    PETUGAS ||--o{ PEMINJAMAN : "mengelola"
-    PEMINJAM ||--o{ PEMINJAMAN : "melakukan"
-    BUKU ||--o{ PEMINJAMAN : "dipinjam"
+    RAK_BUKU ||--|{ BUKU : "menyimpan"
+    PETUGAS ||--o{ BUKU : "mengelola"
+    PEMINJAM ||--o{ BUKU : "meminjam"
 
     KATEGORI {
         int id_kategori PK
@@ -27,8 +26,12 @@ erDiagram
         string penulis
         string penerbit
         int tahun_terbit
+        date tgl_pinjam
+        date tgl_kembali
         int id_kategori FK
         int id_rak FK
+        int id_peminjam FK
+        int id_petugas FK
     }
 
     PETUGAS {
@@ -45,13 +48,5 @@ erDiagram
         string no_telp
     }
 
-    PEMINJAMAN {
-        int id_pinjam PK
-        date tgl_pinjam
-        date tgl_kembali
-        int id_buku FK
-        int id_peminjam FK
-        int id_petugas FK
-    }
 
 ```
