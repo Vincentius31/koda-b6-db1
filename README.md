@@ -1,5 +1,52 @@
-# Library System Entity Relationship Diagram (ERD)
+# 📚 Sistem Basis Data Perpustakaan (PostgreSQL + ERD Mermaid)
+
+## 📖 Deskripsi Project
+
+Project ini merupakan implementasi **perancangan basis data sistem perpustakaan** yang dibuat melalui proses **normalisasi hingga Third Normal Form (3NF)** dan divisualisasikan menggunakan **Mermaid ER Diagram**.
+
+Database ini dirancang untuk mengelola:
+
+- Data buku
+- Kategori buku
+- Rak penyimpanan
+- Penulis dan penerbit
+- Data anggota perpustakaan
+- Data petugas
+- Transaksi peminjaman buku
+
 ---
+
+## 🎯 Tujuan Perancangan
+
+Tujuan utama dari perancangan database ini:
+
+- Menghindari **redundansi data**
+- Menjaga **integritas relasi**
+- Memenuhi standar **normalisasi database**
+- Mempermudah pengelolaan sistem perpustakaan
+
+---
+
+## 🧠 Proses Normalisasi
+
+Database ini telah melalui tahapan:
+
+### ✅ First Normal Form (1NF)
+- Data bersifat atomic
+- Tidak ada grup data berulang
+
+### ✅ Second Normal Form (2NF)
+- Memisahkan data transaksi dari tabel buku
+
+### ✅ Third Normal Form (3NF)
+- Memisahkan entitas independen seperti:
+  - Penulis
+  - Penerbit
+  - Kategori
+  - Rak buku
+---
+
+## 📊 Entity Relationship Diagram
 
 ```mermaid
 erDiagram
