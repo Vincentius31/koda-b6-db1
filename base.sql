@@ -1,86 +1,97 @@
-CREATE TABLE "KATEGORI" (
+CREATE TABLE kategori (
     "id_kategori" SERIAL PRIMARY KEY,
-    "nama_kategori" VARCHAR(50) NOT NULL
+    "nama_kategori" VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE "RAK_BUKU" (
+CREATE TABLE rak_buku (
     "id_rak" SERIAL PRIMARY KEY,
-    "nama_rak" VARCHAR(50) NOT NULL,
-    "lokasi" VARCHAR(100) NOT NULL
+    "nama_rak" VARCHAR(100) NOT NULL,
+    "lokasi" VARCHAR(150)
 );
 
-CREATE TABLE "PETUGAS" (
+CREATE TABLE penerbit (
+    "id_penerbit" SERIAL PRIMARY KEY,
+    "nama_penerbit" VARCHAR(150) NOT NULL,
+    "alamat_penerbit" TEXT,
+    "no_telp_penerbit" VARCHAR(20)
+);
+
+CREATE TABLE penulis (
+    "id_penulis" SERIAL PRIMARY KEY,
+    "nama_penulis" VARCHAR(150) NOT NULL
+);
+
+CREATE TABLE petugas (
     "id_petugas" SERIAL PRIMARY KEY,
-    "nama_petugas" VARCHAR(100) NOT NULL,
+    "nama_petugas" VARCHAR(150) NOT NULL,
     "username" VARCHAR(50) UNIQUE NOT NULL,
     "password" VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE "PEMINJAM" (
+CREATE TABLE peminjam (
     "id_peminjam" SERIAL PRIMARY KEY,
-    "nama_peminjam" VARCHAR(100) NOT NULL,
+    "nama_peminjam" VARCHAR(150) NOT NULL,
     "alamat" TEXT,
-    "no_telp" VARCHAR(15)
+    "no_telp" VARCHAR(20)
 );
 
-CREATE TABLE "BUKU" (
+CREATE TABLE buku (
     "id_buku" SERIAL PRIMARY KEY,
-    "isbn" CHAR(13),
+    "isbn" VARCHAR(20) UNIQUE NOT NULL,
     "judul" VARCHAR(255) NOT NULL,
-    "penulis" VARCHAR(100),
-    "penerbit" VARCHAR(100),
     "tahun_terbit" INT,
-    "tgl_pinjam" DATE,
-    "tgl_kembali" DATE,
-    "id_kategori" INT REFERENCES "KATEGORI"("id_kategori") ON DELETE SET NULL,
-    "id_rak" INT REFERENCES "RAK_BUKU"("id_rak") ON DELETE SET NULL,
-    "id_peminjam" INT REFERENCES "PEMINJAM"("id_peminjam") ON DELETE SET NULL,
-    "id_petugas" INT REFERENCES "PETUGAS"("id_petugas") ON DELETE SET NULL
+
+    "kategori_id" INT NOT NULL,
+    "rak_id" INT NOT NULL,
+    "penerbit_id" INT NOT NULL,
+
+    CONSTRAINT "fk_buku_kategori"
+        FOREIGN KEY ("kategori_id") REFERENCES "kategori"("id_kategori")
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+
+    CONSTRAINT "fk_buku_rak"
+        FOREIGN KEY ("rak_id") REFERENCES "rak_buku"("id_rak")
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+
+    CONSTRAINT "fk_buku_penerbit"
+        FOREIGN KEY ("penerbit_id") REFERENCES "penerbit"("id_penerbit")
+        ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
-INSERT INTO "KATEGORI" ("nama_kategori") VALUES 
-('Sains'), ('Teknologi'), ('Sastra'), ('Sejarah'), ('Fiksi'), 
-('Biografi'), ('Agama'), ('Seni'), ('Kesehatan'), ('Ekonomi');
 
-INSERT INTO "RAK_BUKU" ("nama_rak", "lokasi") VALUES 
-('A1', 'Lantai 1 Sayap Kiri'), ('A2', 'Lantai 1 Sayap Kiri'),
-('B1', 'Lantai 1 Sayap Kanan'), ('B2', 'Lantai 1 Sayap Kanan'),
-('C1', 'Lantai 2'), ('C2', 'Lantai 2'),
-('D1', 'Lantai 3'), ('D2', 'Lantai 3'),
-('E1', 'Area Referensi'), ('Z1', 'Gudang Koleksi');
+CREATE TABLE buku_penulis (
+    "buku_id" INT NOT NULL,
+    "penulis_id" INT NOT NULL,
 
-INSERT INTO "PETUGAS" ("nama_petugas", "username", "password") VALUES 
-('Budi Santoso', 'budi_admin', 'pass123'), ('Siti Aminah', 'siti_a', 'pass123'),
-('Andi Wijaya', 'andi_w', 'pass123'), ('Dewi Lestari', 'dewi_l', 'pass123'),
-('Eko Prasetyo', 'eko_p', 'pass123'), ('Fani Rahma', 'fani_r', 'pass123'),
-('Gita Gutawa', 'gita_g', 'pass123'), ('Hadi Mulyo', 'hadi_m', 'pass123'),
-('Indah Sari', 'indah_s', 'pass123'), ('Joko Susilo', 'joko_s', 'pass123');
+    PRIMARY KEY ("buku_id", "penulis_id"),
 
-INSERT INTO "PEMINJAM" ("nama_peminjam", "alamat", "no_telp") VALUES 
-('Rizky', 'Jakarta', '08123456789'), ('Ahmad', 'Bandung', '08123456780'),
-('Siska', 'Surabaya', '08123456781'), ('Bambang', 'Medan', '08123456782'),
-('Citra', 'Semarang', '08123456783'), ('Deni', 'Makassar', '08123456784'),
-('Echa', 'Palembang', '08123456785'), ('Fajar', 'Yogyakarta', '08123456786'),
-('Gani', 'Denpasar', '08123456787'), ('Hani', 'Malang', '08123456788');
+    CONSTRAINT "fk_bp_buku"
+        FOREIGN KEY ("buku_id") REFERENCES "buku"("id_buku")
+        ON DELETE CASCADE,
 
-INSERT INTO "BUKU" ("isbn", "judul", "penulis", "penerbit", "tahun_terbit", "tgl_pinjam", "tgl_kembali", "id_kategori", "id_rak", "id_peminjam", "id_petugas") VALUES 
-('9786020332512', 'Laskar Pelangi', 'Andrea Hirata', 'Bentang', 2005, '2024-02-01', '2024-02-15', 3, 1, 1, 1),
-('9786020523316', 'Atomic Habits', 'James Clear', 'Gramedia', 2018, '2024-02-05', '2024-02-19', 2, 2, 2, 2),
-('9789791227000', 'Bumi Manusia', 'Pramoedya A.T.', 'Lentera Dipantara', 1980, NULL, NULL, 3, 1, NULL, 1),
-('9786024410292', 'Filosofi Teras', 'Henry Manampiring', 'Kompas', 2018, '2024-02-10', '2024-02-24', 7, 5, 3, 3),
-('9786020633176', 'Sapiens', 'Yuval Noah Harari', 'KPG', 2011, NULL, NULL, 4, 7, NULL, 1),
-('9786020300001', 'Dunia Sophie', 'Jostein Gaarder', 'Mizan', 1991, '2024-02-12', '2024-02-26', 7, 6, 4, 4),
-('9786020300002', 'Cantik Itu Luka', 'Eka Kurniawan', 'Gramedia', 2002, NULL, NULL, 3, 3, NULL, 2),
-('9786020300003', 'Negara Kelima', 'ES Ito', 'Pustaka Alvabet', 2005, '2024-02-14', '2024-02-28', 5, 4, 5, 5),
-('9786020300004', 'Supernova', 'Dee Lestari', 'Bentang', 2001, NULL, NULL, 5, 1, NULL, 1),
-('9786020300005', 'Pulang', 'Leila S. Chudori', 'KPG', 2012, '2024-02-15', '2024-03-01', 3, 2, 6, 2);
+    CONSTRAINT "fk_bp_penulis"
+        FOREIGN KEY ("penulis_id") REFERENCES "penulis"("id_penulis")
+        ON DELETE CASCADE
+);
 
+CREATE TABLE peminjaman (
+    "id_peminjaman" SERIAL PRIMARY KEY,
+    "buku_id" INT NOT NULL,
+    "peminjam_id" INT NOT NULL,
+    "petugas_id" INT NOT NULL,
+    "status" VARCHAR(20),
+    "tgl_pinjam" DATE NOT NULL,
+    "tgl_kembali" DATE,
 
+    CONSTRAINT "fk_peminjaman_buku"
+        FOREIGN KEY ("buku_id") REFERENCES "buku"("id_buku")
+        ON UPDATE CASCADE ON DELETE RESTRICT,
 
+    CONSTRAINT "fk_peminjaman_peminjam"
+        FOREIGN KEY ("peminjam_id") REFERENCES "peminjam"("id_peminjam")
+        ON UPDATE CASCADE ON DELETE RESTRICT,
 
-
-
-
-
-
-
+    CONSTRAINT "fk_peminjaman_petugas"
+        FOREIGN KEY ("petugas_id") REFERENCES "petugas"("id_petugas")
+        ON UPDATE CASCADE ON DELETE RESTRICT
+);
